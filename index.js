@@ -1,12 +1,31 @@
 const { addTodo, listTodos, markDone, deleteTodo, editTodo } = require('./commands');
 const { formatTodoList } = require('./display');
 
+const HELP_TEXT = `
+TODO CLI - A simple command-line todo manager
+
+Usage: node index.js <command> [arguments]
+
+Commands:
+  add <text>          Add a new todo
+  list                List all todos
+  done <id>           Mark a todo as completed
+  delete <id>         Delete a todo
+  edit <id> <text>    Edit a todo's text
+
+Examples:
+  node index.js add "Buy groceries"
+  node index.js list
+  node index.js done 1
+  node index.js delete 2
+  node index.js edit 1 "Buy organic groceries"
+`.trim();
+
 const args = process.argv.slice(2);
 const command = args[0];
 
 if (!command) {
-  console.log('Usage: node index.js <command> [arguments]');
-  console.log('Commands: add <text>, list, done <id>, delete <id>, edit <id> <text>');
+  console.log(HELP_TEXT);
   process.exit(1);
 }
 
@@ -62,6 +81,7 @@ switch (command) {
     break;
   }
   default:
-    console.error(`Unknown command: ${command}`);
+    console.error(`Unknown command: ${command}\n`);
+    console.log(HELP_TEXT);
     process.exit(1);
 }
