@@ -80,6 +80,41 @@ test('loadTodos reads back saved data', () => {
 
 cleanState();
 
+const NODE = process.argv[0];
+
+// --- Add command tests ---
+
+test('add command creates a todo via CLI', () => {
+  cleanState();
+  execSync(`"${NODE}" index.js add "My first todo"`, { cwd: __dirname });
+  const todos = readTodos();
+  assert(todos !== null, 'File should exist');
+  assert(todos.length === 1, 'Should have 1 todo');
+  assert(todos[0].text === 'My first todo', 'Text should match');
+  assert(todos[0].done === false, 'Should not be done');
+  assert(todos[0].id === 1, 'ID should be 1');
+});
+
+test('add command appends second todo with incremented id', () => {
+  execSync(`"${NODE}" index.js add "Second todo"`, { cwd: __dirname });
+  const todos = readTodos();
+  assert(todos.length === 2, 'Should have 2 todos');
+  assert(todos[1].text === 'Second todo', 'Second text should match');
+  assert(todos[1].id === 2, 'Second ID should be 2');
+});
+
+test('add command fails without text', () => {
+  let threw = false;
+  try {
+    execSync(`"${NODE}" index.js add`, { cwd: __dirname, stdio: 'pipe' });
+  } catch (error) {
+    threw = true;
+  }
+  assert(threw, 'Should exit with error when no text provided');
+});
+
+cleanState();
+
 console.log(`\n${passedTests}/${totalTests} tests passed`);
 
 process.exit(passedTests === totalTests ? 0 : 1);
