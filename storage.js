@@ -17,9 +17,6 @@ function loadTodos() {
 
     return JSON.parse(data);
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      return [];
-    }
     throw new Error(`Failed to load todos: ${error.message}`);
   }
 }

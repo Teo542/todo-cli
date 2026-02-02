@@ -29,59 +29,65 @@ if (!command) {
   process.exit(1);
 }
 
-switch (command) {
-  case 'add': {
-    const text = args.slice(1).join(' ');
-    if (!text) {
-      console.error(red('Error: Please provide todo text'));
-      process.exit(1);
-    }
-    const todo = addTodo(text);
-    console.log(green(`Added: [${todo.id}] ${todo.text}`));
-    break;
-  }
-  case 'list': {
-    const todos = listTodos();
-    console.log(formatTodoList(todos));
-    break;
-  }
-  case 'done': {
-    const doneId = Number(args[1]);
-    if (!doneId) {
-      console.error(red('Error: Please provide a todo ID'));
-      process.exit(1);
-    }
-    const done = markDone(doneId);
-    console.log(green(`Done: [${done.id}] ${done.text}`));
-    break;
-  }
-  case 'edit': {
-    const editId = Number(args[1]);
-    if (!editId) {
-      console.error(red('Error: Please provide a todo ID'));
-      process.exit(1);
-    }
-    const newText = args.slice(2).join(' ');
-    if (!newText) {
-      console.error(red('Error: Please provide new text'));
-      process.exit(1);
-    }
-    const edited = editTodo(editId, newText);
-    console.log(green(`Edited: [${edited.id}] ${edited.text}`));
-    break;
-  }
-  case 'delete': {
-    const delId = Number(args[1]);
-    if (!delId) {
-      console.error(red('Error: Please provide a todo ID'));
-      process.exit(1);
-    }
-    const removed = deleteTodo(delId);
-    console.log(green(`Deleted: [${removed.id}] ${removed.text}`));
-    break;
-  }
-  default:
-    console.error(red(`Unknown command: ${command}`) + '\n');
-    console.log(HELP_TEXT);
+function parseId(value) {
+  const id = Number(value);
+  if (!id) {
+    console.error(red('Error: Please provide a valid todo ID'));
     process.exit(1);
+  }
+  return id;
+}
+
+function run() {
+  switch (command) {
+    case 'add': {
+      const text = args.slice(1).join(' ');
+      if (!text) {
+        console.error(red('Error: Please provide todo text'));
+        process.exit(1);
+      }
+      const todo = addTodo(text);
+      console.log(green(`Added: [${todo.id}] ${todo.text}`));
+      break;
+    }
+    case 'list': {
+      const todos = listTodos();
+      console.log(formatTodoList(todos));
+      break;
+    }
+    case 'done': {
+      const id = parseId(args[1]);
+      const done = markDone(id);
+      console.log(green(`Done: [${done.id}] ${done.text}`));
+      break;
+    }
+    case 'edit': {
+      const id = parseId(args[1]);
+      const newText = args.slice(2).join(' ');
+      if (!newText) {
+        console.error(red('Error: Please provide new text'));
+        process.exit(1);
+      }
+      const edited = editTodo(id, newText);
+      console.log(green(`Edited: [${edited.id}] ${edited.text}`));
+      break;
+    }
+    case 'delete': {
+      const id = parseId(args[1]);
+      const removed = deleteTodo(id);
+      console.log(green(`Deleted: [${removed.id}] ${removed.text}`));
+      break;
+    }
+    default:
+      console.error(red(`Unknown command: ${command}`) + '\n');
+      console.log(HELP_TEXT);
+      process.exit(1);
+  }
+}
+
+try {
+  run();
+} catch (error) {
+  console.error(red(`Error: ${error.message}`));
+  process.exit(1);
 }
