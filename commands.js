@@ -21,4 +21,30 @@ function addTodo(text) {
   return todo;
 }
 
-module.exports = { addTodo, listTodos };
+function markDone(id) {
+  const todos = loadTodos();
+  const todo = todos.find(t => t.id === id);
+
+  if (!todo) {
+    throw new Error(`Todo with ID ${id} not found`);
+  }
+
+  todo.done = true;
+  saveTodos(todos);
+  return todo;
+}
+
+function deleteTodo(id) {
+  const todos = loadTodos();
+  const index = todos.findIndex(t => t.id === id);
+
+  if (index === -1) {
+    throw new Error(`Todo with ID ${id} not found`);
+  }
+
+  const removed = todos.splice(index, 1)[0];
+  saveTodos(todos);
+  return removed;
+}
+
+module.exports = { addTodo, listTodos, markDone, deleteTodo };

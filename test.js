@@ -148,6 +148,52 @@ test('list command shows completed todo with [✓]', () => {
 
 cleanState();
 
+// --- Done command tests ---
+
+test('done command marks a todo as completed', () => {
+  cleanState();
+  execSync(`"${NODE}" index.js add "Mark me done"`, { cwd: __dirname });
+  execSync(`"${NODE}" index.js done 1`, { cwd: __dirname });
+  const todos = readTodos();
+  assert(todos[0].done === true, 'Todo should be marked done');
+});
+
+test('done command fails with invalid ID', () => {
+  cleanState();
+  let threw = false;
+  try {
+    execSync(`"${NODE}" index.js done 999`, { cwd: __dirname, stdio: 'pipe' });
+  } catch (error) {
+    threw = true;
+  }
+  assert(threw, 'Should fail with non-existent ID');
+});
+
+// --- Delete command tests ---
+
+test('delete command removes a todo', () => {
+  cleanState();
+  execSync(`"${NODE}" index.js add "Delete me"`, { cwd: __dirname });
+  execSync(`"${NODE}" index.js add "Keep me"`, { cwd: __dirname });
+  execSync(`"${NODE}" index.js delete 1`, { cwd: __dirname });
+  const todos = readTodos();
+  assert(todos.length === 1, 'Should have 1 todo left');
+  assert(todos[0].text === 'Keep me', 'Remaining todo should be correct');
+});
+
+test('delete command fails with invalid ID', () => {
+  cleanState();
+  let threw = false;
+  try {
+    execSync(`"${NODE}" index.js delete 999`, { cwd: __dirname, stdio: 'pipe' });
+  } catch (error) {
+    threw = true;
+  }
+  assert(threw, 'Should fail with non-existent ID');
+});
+
+cleanState();
+
 console.log(`\n${passedTests}/${totalTests} tests passed`);
 
 process.exit(passedTests === totalTests ? 0 : 1);

@@ -1,4 +1,4 @@
-const { addTodo, listTodos } = require('./commands');
+const { addTodo, listTodos, markDone, deleteTodo } = require('./commands');
 const { formatTodoList } = require('./display');
 
 const args = process.argv.slice(2);
@@ -6,7 +6,7 @@ const command = args[0];
 
 if (!command) {
   console.log('Usage: node index.js <command> [arguments]');
-  console.log('Commands: add <text>, list');
+  console.log('Commands: add <text>, list, done <id>, delete <id>');
   process.exit(1);
 }
 
@@ -24,6 +24,26 @@ switch (command) {
   case 'list': {
     const todos = listTodos();
     console.log(formatTodoList(todos));
+    break;
+  }
+  case 'done': {
+    const doneId = Number(args[1]);
+    if (!doneId) {
+      console.error('Error: Please provide a todo ID');
+      process.exit(1);
+    }
+    const done = markDone(doneId);
+    console.log(`Done: [${done.id}] ${done.text}`);
+    break;
+  }
+  case 'delete': {
+    const delId = Number(args[1]);
+    if (!delId) {
+      console.error('Error: Please provide a todo ID');
+      process.exit(1);
+    }
+    const removed = deleteTodo(delId);
+    console.log(`Deleted: [${removed.id}] ${removed.text}`);
     break;
   }
   default:
