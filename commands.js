@@ -1,5 +1,9 @@
 const { loadTodos, saveTodos } = require('./storage');
 
+function listTodos() {
+  return loadTodos();
+}
+
 function addTodo(text) {
   if (!text || !text.trim()) {
     throw new Error('Todo text cannot be empty');
@@ -17,4 +21,4 @@ function addTodo(text) {
   return todo;
 }
 
-module.exports = { addTodo };
+module.exports = { addTodo, listTodos };

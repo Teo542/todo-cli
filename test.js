@@ -115,6 +115,39 @@ test('add command fails without text', () => {
 
 cleanState();
 
+// --- List command tests ---
+
+test('list command shows empty message when no todos', () => {
+  cleanState();
+  const output = execSync(`"${NODE}" index.js list`, {
+    cwd: __dirname, encoding: 'utf8'
+  });
+  assert(output.includes('No todos yet'), 'Should show empty message');
+});
+
+test('list command shows pending todo with [ ]', () => {
+  cleanState();
+  execSync(`"${NODE}" index.js add "Pending task"`, { cwd: __dirname });
+  const output = execSync(`"${NODE}" index.js list`, {
+    cwd: __dirname, encoding: 'utf8'
+  });
+  assert(output.includes('[ ]'), 'Should show [ ] for pending');
+  assert(output.includes('Pending task'), 'Should show todo text');
+});
+
+test('list command shows completed todo with [✓]', () => {
+  cleanState();
+  const { saveTodos } = require('./storage');
+  saveTodos([{ id: 1, text: 'Done task', done: true }]);
+  const output = execSync(`"${NODE}" index.js list`, {
+    cwd: __dirname, encoding: 'utf8'
+  });
+  assert(output.includes('[✓]'), 'Should show [✓] for completed');
+  assert(output.includes('Done task'), 'Should show todo text');
+});
+
+cleanState();
+
 console.log(`\n${passedTests}/${totalTests} tests passed`);
 
 process.exit(passedTests === totalTests ? 0 : 1);
