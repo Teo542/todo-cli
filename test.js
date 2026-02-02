@@ -194,6 +194,40 @@ test('delete command fails with invalid ID', () => {
 
 cleanState();
 
+// --- Edit command tests ---
+
+test('edit command updates todo text', () => {
+  cleanState();
+  execSync(`"${NODE}" index.js add "Original text"`, { cwd: __dirname });
+  execSync(`"${NODE}" index.js edit 1 "Updated text"`, { cwd: __dirname });
+  const todos = readTodos();
+  assert(todos[0].text === 'Updated text', 'Text should be updated');
+  assert(todos[0].id === 1, 'ID should remain the same');
+});
+
+test('edit command preserves done status', () => {
+  cleanState();
+  execSync(`"${NODE}" index.js add "Task"`, { cwd: __dirname });
+  execSync(`"${NODE}" index.js done 1`, { cwd: __dirname });
+  execSync(`"${NODE}" index.js edit 1 "Edited task"`, { cwd: __dirname });
+  const todos = readTodos();
+  assert(todos[0].text === 'Edited task', 'Text should be updated');
+  assert(todos[0].done === true, 'Done status should be preserved');
+});
+
+test('edit command fails with invalid ID', () => {
+  cleanState();
+  let threw = false;
+  try {
+    execSync(`"${NODE}" index.js edit 999 "New text"`, { cwd: __dirname, stdio: 'pipe' });
+  } catch (error) {
+    threw = true;
+  }
+  assert(threw, 'Should fail with non-existent ID');
+});
+
+cleanState();
+
 console.log(`\n${passedTests}/${totalTests} tests passed`);
 
 process.exit(passedTests === totalTests ? 0 : 1);

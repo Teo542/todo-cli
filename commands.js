@@ -47,4 +47,21 @@ function deleteTodo(id) {
   return removed;
 }
 
-module.exports = { addTodo, listTodos, markDone, deleteTodo };
+function editTodo(id, newText) {
+  if (!newText || !newText.trim()) {
+    throw new Error('New text cannot be empty');
+  }
+
+  const todos = loadTodos();
+  const todo = todos.find(t => t.id === id);
+
+  if (!todo) {
+    throw new Error(`Todo with ID ${id} not found`);
+  }
+
+  todo.text = newText.trim();
+  saveTodos(todos);
+  return todo;
+}
+
+module.exports = { addTodo, listTodos, markDone, deleteTodo, editTodo };

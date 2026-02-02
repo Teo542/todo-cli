@@ -1,4 +1,4 @@
-const { addTodo, listTodos, markDone, deleteTodo } = require('./commands');
+const { addTodo, listTodos, markDone, deleteTodo, editTodo } = require('./commands');
 const { formatTodoList } = require('./display');
 
 const args = process.argv.slice(2);
@@ -6,7 +6,7 @@ const command = args[0];
 
 if (!command) {
   console.log('Usage: node index.js <command> [arguments]');
-  console.log('Commands: add <text>, list, done <id>, delete <id>');
+  console.log('Commands: add <text>, list, done <id>, delete <id>, edit <id> <text>');
   process.exit(1);
 }
 
@@ -34,6 +34,21 @@ switch (command) {
     }
     const done = markDone(doneId);
     console.log(`Done: [${done.id}] ${done.text}`);
+    break;
+  }
+  case 'edit': {
+    const editId = Number(args[1]);
+    if (!editId) {
+      console.error('Error: Please provide a todo ID');
+      process.exit(1);
+    }
+    const newText = args.slice(2).join(' ');
+    if (!newText) {
+      console.error('Error: Please provide new text');
+      process.exit(1);
+    }
+    const edited = editTodo(editId, newText);
+    console.log(`Edited: [${edited.id}] ${edited.text}`);
     break;
   }
   case 'delete': {
