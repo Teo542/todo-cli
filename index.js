@@ -1,8 +1,8 @@
 const { addTodo, listTodos, markDone, deleteTodo, editTodo } = require('./commands');
 const { formatTodoList } = require('./display');
+const { green, red, bold } = require('./colors');
 
-const HELP_TEXT = `
-TODO CLI - A simple command-line todo manager
+const HELP_TEXT = `${bold('TODO CLI')} - A simple command-line todo manager
 
 Usage: node index.js <command> [arguments]
 
@@ -33,11 +33,11 @@ switch (command) {
   case 'add': {
     const text = args.slice(1).join(' ');
     if (!text) {
-      console.error('Error: Please provide todo text');
+      console.error(red('Error: Please provide todo text'));
       process.exit(1);
     }
     const todo = addTodo(text);
-    console.log(`Added: [${todo.id}] ${todo.text}`);
+    console.log(green(`Added: [${todo.id}] ${todo.text}`));
     break;
   }
   case 'list': {
@@ -48,40 +48,40 @@ switch (command) {
   case 'done': {
     const doneId = Number(args[1]);
     if (!doneId) {
-      console.error('Error: Please provide a todo ID');
+      console.error(red('Error: Please provide a todo ID'));
       process.exit(1);
     }
     const done = markDone(doneId);
-    console.log(`Done: [${done.id}] ${done.text}`);
+    console.log(green(`Done: [${done.id}] ${done.text}`));
     break;
   }
   case 'edit': {
     const editId = Number(args[1]);
     if (!editId) {
-      console.error('Error: Please provide a todo ID');
+      console.error(red('Error: Please provide a todo ID'));
       process.exit(1);
     }
     const newText = args.slice(2).join(' ');
     if (!newText) {
-      console.error('Error: Please provide new text');
+      console.error(red('Error: Please provide new text'));
       process.exit(1);
     }
     const edited = editTodo(editId, newText);
-    console.log(`Edited: [${edited.id}] ${edited.text}`);
+    console.log(green(`Edited: [${edited.id}] ${edited.text}`));
     break;
   }
   case 'delete': {
     const delId = Number(args[1]);
     if (!delId) {
-      console.error('Error: Please provide a todo ID');
+      console.error(red('Error: Please provide a todo ID'));
       process.exit(1);
     }
     const removed = deleteTodo(delId);
-    console.log(`Deleted: [${removed.id}] ${removed.text}`);
+    console.log(green(`Deleted: [${removed.id}] ${removed.text}`));
     break;
   }
   default:
-    console.error(`Unknown command: ${command}\n`);
+    console.error(red(`Unknown command: ${command}`) + '\n');
     console.log(HELP_TEXT);
     process.exit(1);
 }
