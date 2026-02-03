@@ -1,0 +1,12 @@
+{
+  "name": "todo-cli",
+  "version": "1.0.0",
+  "description": "A simple command-line TODO application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "keywords": ["todo", "cli", "task-manager"],
+  "license": "MIT"
+}
